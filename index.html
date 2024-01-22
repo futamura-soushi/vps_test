@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="https://cdn.webrtc.ecl.ntt.com/skyway-4.4.5.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <title>SkyWayチュートリアル</title>
+</head>
+<body>
+  <div id="txt">ここにデータを表示</div>             <!-- データを表示するdiv要素 -->
+  <div>
+    <p id="my-id"></p>
+    <input id="their-id"></input>
+    <button id="make-call">発信</button>
+    <button id="end-call">切断</button>
+    <button id="move">move</button>
+    <button id="reset">reset</button>
+  </div>
+  <div>
+    <video id="their-video" width="640px" height="'360px" autoplay muted playsinline></video>
+  </div>
+  <style>
+    .example video{
+      max-width: 100%;
+      height:auto;
+    }
+  </style>
+  <div class = "example">
+    <video id="my-video" width="800px" autoplay muted playsinline></video>
+  </div>
+  <div id="messages"></div>  
+  <script src="./videochat.js"></script>
+
+</body>
+</html>
