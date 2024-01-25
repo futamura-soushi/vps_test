@@ -1,5 +1,11 @@
 var aX = 0, aY = 0, aZ = 0;                     // 加速度の値を入れる変数を3個用意
+var prex = 0, prey = 0, prez = 0;
+var velx = 0, vely = 0, velz = 0;
+var timer = 0; 
+var pretimer = 0;
 var alpha = 0, beta = 0, gamma = 0;
+
+// let timer, pretimer
 let timer1;
 let localStream;
 
@@ -36,53 +42,54 @@ document.getElementById('make-call').onclick = () => {
   setEventListener(mediaConnection);
 
   // 相手への接続を開始する
-  const conn = peer.connect(theirID);
+  // const conn = peer.connect(theirID);
 
-  // 接続が完了した場合のイベントの設定
-  conn.on("open", function() {
-      document.getElementById('reset').addEventListener('click', onClickReset)
-      document.getElementById('move').addEventListener('click', timerstop)
-      //timer1 = setInterval(sendInfo, 50);
-  });
+  // // 接続が完了した場合のイベントの設定
+  // conn.on("open", function() {
+  //     document.getElementById('reset').addEventListener('click', onClickReset)
+  //     document.getElementById('move').addEventListener('click', timerstop)
+  //     timer1 = setInterval(sendInfo, 50);
+  // });
 
-  // メッセージ受信イベントの設定
-  conn.on("data", data => {
-      // 画面に受信したメッセージを表示
-      $("#messages").append($("<p>").text(conn.id + ": " + data).css("font-weight", "bold"));
+  // // メッセージ受信イベントの設定
+  // conn.on("data", data => {
+  //     // 画面に受信したメッセージを表示
+  //     $("#messages").append($("<p>").text(conn.id + ": " + data).css("font-weight", "bold"));
 
-  });
+  // });
 
-  function timerstop(){
-    if (timer1) {
-      // タイマーが既に動作している場合は停止
-      clearInterval(timer1);
-      timer1 = null;
-      document.getElementById('move').textContent = 'move'
+  // function timerstop(){
+  //   if (timer1) {
+  //     // タイマーが既に動作している場合は停止
+  //     clearInterval(timer1);
+  //     timer1 = null;
+  //     document.getElementById('move').textContent = 'move'
   
 
-    } else {
-      // タイマーが停止中の場合は開始
-      timer1 = setInterval(sendInfo, 50);
-      document.getElementById('move').textContent = 'stop'
+  //   } else {
+  //     // タイマーが停止中の場合は開始
+  //     timer1 = setInterval(sendInfo, 50);
+  //     document.getElementById('move').textContent = 'stop'
       
 
-    }
-  }
+  //   }
+  // }
 
-  function onClickReset(){
-      const message = 'reset';
-      conn.send(message);
-      // 自分の画面に表示
-      $("#messages").append($("<p>").html(peer.id + ": " + message));
+  // function onClickReset(){
+  //     const message = 'reset';
+  //     conn.send(message);
+  //     // 自分の画面に表示
+  //     $("#messages").append($("<p>").html(peer.id + ": " + message));
 
-  }
+  // }
 
-    // 指定時間ごとに繰り返し実行される setInterval(実行する内容, 間隔[ms]) タイマーを設定
-    function sendInfo(){
-      const info =aX + ',' + aY + ',' + aX + ',' + alpha + ',' + beta + ',' + gamma;
-      console.log(info);
-      conn.send(info);
-    }
+  //   // 指定時間ごとに繰り返し実行される setInterval(実行する内容, 間隔[ms]) タイマーを設定
+  //   function sendInfo(){
+  //     // const info =aX + ',' + aY + ',' + aX + ',' + alpha + ',' + beta + ',' + gamma;
+  //     const info =velx + ',' + vely + ',' + velz + ',' + alpha + ',' + beta + ',' + gamma;
+  //     // console.log(info);
+  //     conn.send(info);
+  //   }
 
   
 };
@@ -140,7 +147,7 @@ peer.on('connection', connection => {
 
   // 指定時間ごとに繰り返し実行される setInterval(実行する内容, 間隔[ms]) タイマーを設定
    function sendInfo(){
-      const info = aX + ',' + aY + ',' + aX + ',' + alpha + ',' + beta + ',' + gamma;
+      const info = velx.toPrecision(5) + ',' + vely.toPrecision(5) + ',' + velz.toPrecision(5) + ',' + alpha + ',' + beta + ',' + gamma;
       console.log(info);
       connection.send(info);
     }
@@ -183,9 +190,20 @@ peer.on('close', function(){
     //. Android または iOS 13 未満の場合、
     //. DeviceOrientationEvent オブジェクトが有効な場合のみ、deviceorientation イベント発生時に deviceOrientaion 関数がハンドリングするよう登録
     window.addEventListener( "devicemotion", (dat) =>{
+        // aX = -dat.acceleration.x.toPrecision(5);    // x軸の重力加速度（Android と iOSでは正負が逆）
+        // aY = -dat.acceleration.y.toPrecision(5);    // y軸の重力加速度（Android と iOSでは正負が逆）
+        // aZ = -dat.acceleration.z.toPrecision(5);    // z軸の重力加速度（Android と iOSでは正負が逆）
+        timer = performance.now()
+        prex = aX;
+        prey = aY;
+        prez = aZ;
         aX = -dat.acceleration.x.toPrecision(5);    // x軸の重力加速度（Android と iOSでは正負が逆）
         aY = -dat.acceleration.y.toPrecision(5);    // y軸の重力加速度（Android と iOSでは正負が逆）
         aZ = -dat.acceleration.z.toPrecision(5);    // z軸の重力加速度（Android と iOSでは正負が逆）
+        velx = (timer - pretimer)*(prex + aX)/2 + velx;
+        vely = (timer - pretimer)*(prey + aY)/2 + vely;
+        velz = (timer - pretimer)*(prez + aZ)/2 + velz;
+        pretimer = performance.now()
         });
 
     window.addEventListener("deviceorientation", (dat) => {
@@ -210,9 +228,21 @@ function ClickRequestDeviceSensor(){
       $('#sensorrequest').css( 'display', 'none' );
       //. 許可された場合のみイベントハンドラを追加できる
       window.addEventListener( "devicemotion", (dat) =>{
-        aX = dat.acceleration.x.toPrecision(5);    // x軸の重力加速度（Android と iOSでは正負が逆）
-        aY = dat.acceleration.y.toPrecision(5);    // y軸の重力加速度（Android と iOSでは正負が逆）
-        aZ = dat.acceleration.z.toPrecision(5);    // z軸の重力加速度（Android と iOSでは正負が逆）
+        // aX = dat.acceleration.x.toPrecision(5);    // x軸の重力加速度（Android と iOSでは正負が逆）
+        // aY = dat.acceleration.y.toPrecision(5);    // y軸の重力加速度（Android と iOSでは正負が逆）
+        // aZ = dat.acceleration.z.toPrecision(5);    // z軸の重力加速度（Android と iOSでは正負が逆）
+        aX = dat.acceleration.x;    // x軸の重力加速度（Android と iOSでは正負が逆）
+        aY = dat.acceleration.y;    // y軸の重力加速度（Android と iOSでは正負が逆）
+        aZ = dat.acceleration.z;    // z軸の重力加速度（Android と iOSでは正負が逆）
+        timer = performance.now() / 1000
+        velx = (timer - pretimer) * (prex + aX) / 2 + velx;
+        vely = (timer - pretimer) * (prey + aY) / 2 + vely;
+        velz = (timer - pretimer) * (prez + aZ) / 2 + velz;
+        pretimer = performance.now() / 1000
+        prex = aX;
+        prey = aY;
+        prez = aZ;
+
       });
 
       window.addEventListener("deviceorientation", (dat) => {
@@ -246,12 +276,13 @@ function deviceOrientation( e ){
 }
 
 // データを表示する displayData 関数
-function displayData() {
-  var txt = document.getElementById("txt");   // データを表示するdiv要素の取得
-  txt.innerHTML = "x: " + aX + "<br>"         // x軸の値
-                + "y: " + aY + "<br>"         // y軸の値
-                + "z: " + aZ + "<br>"         // z軸の値
-                + "α: " + alpha + "<br>"         // x軸の値
-                + "β: " + beta + "<br>"         // y軸の値
-                + "γ: " + gamma + "<br>"         // z軸の値
-}
+// function displayData() {
+//   var txt = document.getElementById("txt");   // データを表示するdiv要素の取得
+//   txt.innerHTML = "x: " + aX + "<br>"         // x軸の値
+//                 + "y: " + prey + "<br>"         // y軸の値
+//                 + "z: " + velz + "<br>"         // z軸の値
+//                 + "α: " + alpha + "<br>"         // x軸の値
+//                 + "β: " + beta + "<br>"         // y軸の値
+//                 + "γ: " + gamma + "<br>"         // z軸の値
+//                 + timer + "<br>" + pretimer +"<br>"
+// }

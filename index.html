@@ -10,7 +10,7 @@
   <title>SkyWayチュートリアル</title>
 </head>
 <body>
-  <div id="txt">ここにデータを表示</div>             <!-- データを表示するdiv要素 -->
+  <div id="txt"></div>             <!-- データを表示するdiv要素 -->
   <div>
     <p id="my-id"></p>
     <input id="their-id"></input>
@@ -19,8 +19,14 @@
     <button id="move">move</button>
     <button id="reset">reset</button>
   </div>
-  <div>
-    <video id="their-video" width="1200px" autoplay muted playsinline></video>
+  <style>
+    .parent{
+      display: flex;
+    }
+  </style>
+  <div class="parent">
+    <video class="child" id="my-video" width="600px" autoplay muted playsinline></video>
+    <video class="child" id="their-video" width="600px" autoplay muted playsinline></video>
   </div>
   <style>
     .example video{
@@ -29,7 +35,7 @@
     }
   </style>
   <div class = "example">
-    <video id="my-video" width="800px" autoplay muted playsinline></video>
+    <video id="my-video" width="1200px" autoplay muted playsinline></video>
   </div>
   <div id="messages"></div>  
   <script src="./videochat.js"></script>
