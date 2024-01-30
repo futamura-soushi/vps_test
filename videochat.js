@@ -8,6 +8,7 @@ var alpha = 0, beta = 0, gamma = 0;
 // let timer, pretimer
 let timer1;
 let localStream;
+let mediaConnection;
 
     //Peer作成
     const peer = new Peer({
