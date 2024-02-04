@@ -20,23 +20,19 @@
     <button id="reset">reset</button>
   </div>
   <style>
-    .parent video{
+    .parent {
       display: flex;
+      flex-direction: row;
+    }
+    .parent video {
+      width: 500px;
     }
   </style>
   <div class="parent">
-    <video id="my-video" width="500px" autoplay muted playsinline></video>
-    <video id="their-video" width="500px" autoplay muted playsinline></video>
+    <video id="my-video" width="480px" height="320px"></video>
+    <video id="their-video" width="480px" height="320px"></video>
     
   </div>
-  <style>
-    .example video{
-      max-width: 100%;
-      height:auto;
-    }
-  </style>
-  <div class = "example">
-    <video id="my-video" width="500px" autoplay muted playsinline></video>
   </div>
   <div id="messages"></div>  
   <script src="./videochat.js"></script>
